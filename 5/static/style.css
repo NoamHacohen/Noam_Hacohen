@@ -1,0 +1,42 @@
+*{
+    padding: 2vw;
+    margin: 2vw;
+    color: blue;
+    border: 3vw;
+    border-color: black;
+    text-align: center;
+}
+.gridcontainer{
+    display: grid;
+    grid-template-areas:'header header header'  'left right right'  ;
+}
+.item1{
+    grid-area: header;
+    background-color: aqua; width: 50%;
+    transition: width 2s;
+
+}
+.item1:hover{
+    width: 89%;
+}
+.item2{
+    grid-area: left; 
+    background-color: aqua; 
+}
+
+.item3{
+    grid-area: right ;
+    background-color: aqua;
+}
+
+@media only screen and (max-width:800px) {
+    .gridcontainer{
+        display: grid;
+        grid-template-areas:
+        'header'
+        'left'
+        'right' ;
+    } 
+    
+}
+
