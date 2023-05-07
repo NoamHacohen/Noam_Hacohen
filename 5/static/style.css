@@ -8,7 +8,7 @@
 }
 .gridcontainer{
     display: grid;
-    grid-template-areas:'header header header'  'left right right'  ;
+    grid-template-areas:'header header middle'  'left right bottom'  ;
 }
 .item1{
     grid-area: header;
@@ -26,6 +26,14 @@
 
 .item3{
     grid-area: right ;
+    background-color: aqua;
+}
+.item4{
+    grid-area: middle;
+    background-color: aqua;
+}
+.item5{
+    grid-area: bottom;
     background-color: aqua;
 }
 
