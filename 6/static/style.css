@@ -1,0 +1,29 @@
+*{
+    padding: 5vw;
+    font-family: Arial, Helvetica, sans-serif;
+}
+body{
+    background-color: white;
+    color: blue;
+}
+
+button{
+    background-color: orange;
+    color: blue;
+    border: 1 solid blue;
+    border-radius: 20%;
+}
+.task{
+    color: black;
+    font-size: large;
+}
+.rotate-btn {
+    transform: rotate(90deg);
+  }
+  
+  
+  
+  
+  
+  
+  
