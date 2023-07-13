@@ -1,72 +1,125 @@
 const path = require('path');
-const sql = require('./DB');
+const sql = require('./db');
 const cookie = require('cookie-parser');
 
-
-const createNewUser = (req,res)=>{
-    //res.send(req.query);
-    // validate info exists
-
-    // pull info frin req.query to json object
-    const NewSignUp = {
-        email: req.query.UserEmail, 
-        name: req.query.UserName
-    };
-    // run insert query
-    const Q1 = "INSERT INTO SignUps SET ?";
-    sql.query(Q1, NewSignUp, (err, mysqlres)=>{
+// Create a table 'Users'
+/*const createUsersTable = (req, res) => {
+  const Q1 = `CREATE TABLE Users (
+    email VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) not null,
+    favoriteCoin VARCHAR(255) not null
+  )`;
+  
+  sql.query(Q1, (err, mysqlres) => {
+    if (err) {
+      console.error("Error creating 'Users' table:", err);
+      return;
+    }
+    console.log("'Users' table created successfully");
+    res.send("table created");
+  });
+};*/
+const CreateUserTable = (req,res)=>{
+    const Q1 = 'CREATE TABLE IF NOT EXISTS `USERS` (\
+        ID int(9) NOT NULL PRIMARY KEY AUTO_INCREMENT,\
+        Email varchar(50) NOT NULL,\
+        FullName varchar(50) NOT NULL,\
+        UserName varchar(50) NOT NULL,\
+        Password varchar(50) NOT NULL,\
+        CourseNumber varchar(3) NOT NULL\
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8';
+        SQL.query(Q1, (err,mysqlres)=>{
+        //console.log("in query");
         if (err) {
             console.log(err);
-            res.send("something went wrong");    
+            //res.status(400).send(err);
+            res.status(400).render('home', {v1: err})
             return;
         }
-        //res.send("thank you!");
-        //res.sendFile(path.join(__dirname, "../views/search.html"));
-        res.cookie("nameUser", req.query.UserName);
-        res.redirect("/activUser");
+        //res.send("hi - table created");
+        res.render('home', {v1: "Table created"});
         return;
-    });};
+    })};
 
-const searchUser = (req,res)=>{
-    // get cookie
-    const activeUser = req.cookies.name_user;
-    
-    // validate body exists
-    if (!req.body) {
-        res.status(400).send("cannot serch user - content cannot be empty");
-        return;
-    };
-    // cretae json object for query
-    const searchName = req.body.searchName;
-    // sql query syntax
-    const Q2 = 'SELECT * FROM SignUps where name like ?';
-    // run query
-    sql.query(Q2, searchName + "%", (err, mysqlres)=>{
-        if (err) {
-            console.log(err);
-            res.status(400).send('cannot find user');
-            return;
-        }
-        res.send(mysqlres);
-        console.log("active user is");
-        return;
-    });
-}; 
-
-const selectAllUsers = (req,res)=>{
-    const Q3 = 'select * from SignUps';
-    sql.query(Q3, (err,mysqlres)=>{
-        if (err) {
-            console.log(err);
-            res.status(400).send("cannot find users");
-            return;
-        }
-        //res.send(mysqlres);
-        res.render('selctAll', {V1:mysqlres})
-        console.log("found table");
-        return;
-    })
+// Create a new user
+const CreateNewUser = (email, username, password, favoriteCoin, callback) => {
+  const query = "INSERT INTO Users (email, username, password, favoriteCoin) VALUES (?, ?, ?, ?)";
+  sql.query(query, [email, username, password, favoriteCoin], (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+    console.log("New user created");
+    callback(null, results);
+  });
 };
 
 
-module.exports = {createNewUser, searchUser, selectAllUsers}
+// Update user information
+const updateUserInfo = (email, username, password, favoriteCoin, callback) => {
+  const query = "UPDATE Users SET favoriteCoin = ? WHERE email = ?";
+  sql.query(query, [email, username, password, favoriteCoin, callback], (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+    console.log("User information updated");
+    callback(null, results);
+  });
+};
+
+// Drop all tables
+const dropAllTables = () => {
+  const query = "DROP TABLE Users";
+  sql.query(query, (err, results) => {
+    if (err) {
+      console.error("Error dropping tables:", err);
+    } else {
+      console.log("Tables dropped successfully");
+    }
+  });
+};
+
+// Check if a user exists
+const checkUserExists = (email, callback) => {
+  const query = "SELECT EXISTS (SELECT 1 FROM Users WHERE email = ?) AS userExists";
+  sql.query(query, [email], (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+    const userExists = results[0].userExists === 1;
+    callback(null, userExists);
+  });
+};
+
+// Create a table 'History'
+const createHistoryTable = () => {
+  const query = `CREATE TABLE History (
+    email VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    FromCoin VARCHAR(255) NOT NULL,
+    Amount INT NOT NULL,
+    ToCoin VARCHAR(255) NOT NULL,
+    date DATE
+  )`;
+  
+  sql.query(query, (err, results) => {
+    if (err) {
+      console.error("Error creating 'History' table:", err);
+    } else {
+      console.log("'History' table created successfully");
+    }
+  });
+};
+
+
+module.exports = {
+  createUsersTable,
+  CreateNewUser,
+  updateUserInfo,
+  dropAllTables,
+  checkUserExists,
+  createHistoryTable
+};
