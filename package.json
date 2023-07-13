@@ -1,19 +1,11 @@
 {
-  "name": "188_8",
+  "name": "static",
   "version": "1.0.0",
-  "description": "Gal Hacohen and Noam Hacohen",
-  "main": "server.js",
+  "description": "",
+  "main": "country-list.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.20.2",
-    "express": "^4.18.2",
-    "mysql2": "^3.4.2",
-    "nodemon": "^2.0.22",
-    "path": "^0.12.7"
-  }
+  "license": "ISC"
 }
